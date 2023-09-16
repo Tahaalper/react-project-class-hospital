@@ -26,9 +26,9 @@ const Home = () => {
             )
             .catch(err => {
                 console.log(err, "err")
-            })
+            }
+            )
     }, []);
-
     if (!appointments || !patients) {
         return <h1>Loading...</h1>
     }
@@ -37,14 +37,16 @@ const Home = () => {
             <h1>Main Page</h1>
             <TableContainer style={{ marginTop: "50px" }} component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow sx={{ backgroundColor: "#aaa" }}>
+                    <TableHead sx={{backgroundColor:"#aaa"}}>
+                        <TableRow>
                             <TableCell>Date</TableCell>
                             <TableCell>Name</TableCell>
                             <TableCell>Surname</TableCell>
                             <TableCell>Phone</TableCell>
                             <TableCell>Operations</TableCell>
                         </TableRow>
+                    </TableHead>
+                    <TableBody>
                         {
                             appointments.map((appointment) => {
                                 const searchedPatient = patients.find(patient => patient.id === appointment.patientId)
@@ -64,8 +66,6 @@ const Home = () => {
                                 )
                             })
                         }
-                    </TableHead>
-                    <TableBody>
                     </TableBody>
                 </Table>
             </TableContainer>

@@ -1,42 +1,42 @@
 {
-    "appointments": [
-        {
-            "id": "1",
-            "date": "14.09.2023",
-            "patientId": "1"
-        }
-    ],
-    "patients": [
-        {
-            "id": "1",
-            "name": "deneme",
-            "surname": "deneme",
-            "phone": "555555555555",
-            "operationIds": [
-                "1",
-                "2"
-            ]
-        }
-    ],
-    "operations": [
-        {
-            "id": "1",
-            "complaint": "flu",
-            "treatment": "2 days rest recommended",
-            "prescription": [
-                "parol",
-                "katarin",
-                "agumentina"
-            ]
-        },
-        {
-            "id": "2",
-            "complaint": "back pain",
-            "treatment": "physiotherapy",
-            "prescription": [
-                "parol",
-                "voltaren"
-            ]
-        }
-    ]
+  "appointments": [
+    {
+      "id": "1",
+      "date": "17.09.2022",
+      "patientId": "1"
+    }
+  ],
+  "patients": [
+    {
+      "id": "1",
+      "name": "deneme",
+      "surname": "deneme",
+      "phone": "05554441313",
+      "operationIds": [
+        "1",
+        "2"
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "id": "1",
+      "complaint": "flu",
+      "treatment": "2 days rest reccomended",
+      "prescription": [
+        "parol",
+        "katarin",
+        "agumentine"
+      ]
+    },
+    {
+      "id": "2",
+      "complaint": "back pain",
+      "treatment": "smth",
+      "prescription": [
+        "smth",
+        "like"
+      ]
+    }
+  ]
 }
