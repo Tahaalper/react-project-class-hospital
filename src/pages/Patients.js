@@ -1,21 +1,17 @@
-/* eslint-disable array-callback-return */
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import axios from "axios";
 import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
-import { useNavigate } from "react-router-dom"
-import { Stack } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
+import {
+    Button, Paper, Table, TableBody, TableCell,
+    TableContainer, TableHead, TableRow, Stack
+} from '@mui/material';
+
 const Patients = (props) => {
     const navigate = useNavigate()
     const [patients, setPatients] = useState(null)
     const [updateComponent, setUpdateComponent] = useState(false)
+    const [appointments, setAppointments] = useState(null)
     useEffect((props) => {
         axios.get("http://localhost:3004/patients")
             .then(res => {
@@ -24,27 +20,45 @@ const Patients = (props) => {
             .catch(err => {
                 console.log(err, "err")
             })
+        axios.get("http://localhost:3004/appointments")
+            .then(res => {
+                setAppointments(res.data)
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }, [updateComponent])
+
 
     const handleDeletePatient = (patient) => {
         axios.delete(`http://localhost:3004/patients/${patient.id}`)
             .then(deletePatientResponse => {
                 patient.operationIds.map(operationId => {
-                    axios.delete(`http://localhost:3004/patients/${operationId}`)
-                        .then(deleteOperationRes => {
-                        })
-                        .catch(err => console.log("Patients page deleteOperation err", err))
+                    return (
+                        axios.delete(`http://localhost:3004/patients/${operationId}`)
+                            .then(deleteOperationRes => {
+                            })
+                            .catch(err => console.log("Patients page deleteOperation err", err))
+                    )
+                })
+                const filteredAppointments = appointments.filter(item => item.patientId === patient.id)
+                filteredAppointments.map(item => {
+                    return (
+                        axios.delete(`http://localhost:3004/patients/${item.id}`)
+                            .then(res => { })
+                            .catch(err => console.log("err", err))
+                    )
                 })
                 setUpdateComponent(!updateComponent)
             })
             .catch(err => console.log("Patients page deletePatient err", err))
     }
-    if (!patients) {
+
+    if (!patients || !appointments) {
         return (<h1>Loading...</h1>)
     }
     return (
         <div>
-            <h1>Patients page</h1>
             <TableContainer style={{ marginTop: "50px" }} component={Paper}>
                 <div style={{
                     marginBottom: "20px",

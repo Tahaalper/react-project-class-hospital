@@ -1,18 +1,16 @@
 import { useEffect, useState } from 'react';
 import axios from "axios";
 import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import { useNavigate } from 'react-router-dom';
+import {
+    Button, Paper, Table, TableBody, TableCell,
+    TableContainer, TableHead, TableRow
+} from '@mui/material';
 
 const Home = () => {
     const [appointments, setAppointments] = useState(null);
     const [patients, setPatients] = useState(null);
-
+    const navigate = useNavigate();
     useEffect(() => {
         axios.get("http://localhost:3004/appointments")
             .then(resAppointments => {
@@ -34,10 +32,23 @@ const Home = () => {
     }
     return (
         <div>
-            <h1>Main Page</h1>
             <TableContainer style={{ marginTop: "50px" }} component={Paper}>
+                <div
+                    style={{
+                        marginBottom: "20px",
+                        display: "flex",
+                        justifyContent: "flex-end"
+                    }}
+                >
+                    <Button
+                        onClick={() => navigate("/add-appointment")}
+                        variant='contained'
+                    >
+                        Add appointment
+                    </Button>
+                </div>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead sx={{backgroundColor:"#aaa"}}>
+                    <TableHead sx={{ backgroundColor: "#aaa" }}>
                         <TableRow>
                             <TableCell>Date</TableCell>
                             <TableCell>Name</TableCell>
@@ -47,6 +58,13 @@ const Home = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
+                        {
+                            appointments.length === 0 && (
+                                <TableRow>
+                                    <TableCell align="center" colSpan={5}>There are no appointments</TableCell>
+                                </TableRow>
+                            )
+                        }
                         {
                             appointments.map((appointment) => {
                                 const searchedPatient = patients.find(patient => patient.id === appointment.patientId)

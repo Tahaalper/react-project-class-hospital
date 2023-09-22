@@ -1,42 +1,59 @@
 {
+  "operations": [
+    {
+      "id": "1695403971453",
+      "complaint": "test1",
+      "treatment": "",
+      "prescription": []
+    },
+    {
+      "id": "1695404021236",
+      "complaint": "test1",
+      "treatment": "",
+      "prescription": []
+    },
+    {
+      "id": "1695404642387",
+      "complaint": "test2",
+      "treatment": "",
+      "prescription": []
+    },
+    {
+      "id": "1695404694784",
+      "complaint": "test2",
+      "treatment": "",
+      "prescription": []
+    }
+  ],
   "appointments": [
     {
-      "id": "1",
-      "date": "17.09.2022",
-      "patientId": "1"
+      "id": "1695404021235",
+      "date": "2023-09-28T19:33",
+      "patientId": "1695403971505"
+    },
+    {
+      "id": "1695404694786",
+      "date": "2023-10-07T19:44",
+      "patientId": "1695404694785"
     }
   ],
   "patients": [
     {
-      "id": "1",
-      "name": "deneme",
-      "surname": "deneme",
-      "phone": "05554441313",
+      "id": "1695403971505",
+      "name": "test1",
+      "surname": "test1",
+      "phone": "01111111111",
       "operationIds": [
-        "1",
-        "2"
-      ]
-    }
-  ],
-  "operations": [
-    {
-      "id": "1",
-      "complaint": "flu",
-      "treatment": "2 days rest reccomended",
-      "prescription": [
-        "parol",
-        "katarin",
-        "agumentine"
+        "1695403971453",
+        "1695404021236"
       ]
     },
     {
-      "id": "2",
-      "complaint": "back pain",
-      "treatment": "smth",
-      "prescription": [
-        "smth",
-        "like"
-      ]
+      "id": "1695404694785",
+      "name": "test2",
+      "surname": "test2",
+      "phone": "02222222222",
+      "operationIds": []
     }
   ]
 }

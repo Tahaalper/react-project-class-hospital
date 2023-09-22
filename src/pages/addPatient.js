@@ -73,20 +73,22 @@ const AddPatient = (props) => {
                 <div style={{ display: "flex", justifyContent: "center", margin: "20px 0px" }}>
                     <TextField
                         style={{ width: "50%" }}
-                        label="Patient Name"
+                        label="Patient's Name"
                         variant="outlined"
                         value={name}
                         onChange={event => setName(event.target.value)}
+                        
                     />
 
                 </div>
                 <div style={{ display: "flex", justifyContent: "center", margin: "20px 0px" }}>
                     <TextField
                         style={{ width: "50%" }}
-                        label="Patient Surname"
+                        label="Patient's Surname"
                         variant="outlined"
                         value={surname}
                         onChange={event => setSurname(event.target.value)}
+
                     />
 
                 </div>
