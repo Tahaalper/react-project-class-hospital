@@ -12,10 +12,10 @@ const Home = () => {
     const [patients, setPatients] = useState(null);
     const navigate = useNavigate();
     useEffect(() => {
-        axios.get("http://localhost:3004/appointments")
+        axios.get("http://localhost:3090/appointments")
             .then(resAppointments => {
                 setAppointments(resAppointments.data)
-                axios.get("http://localhost:3004/patients")
+                axios.get("http://localhost:3090/patients")
                     .then(resPatients => {
                         setPatients(resPatients.data)
                     })
@@ -74,12 +74,16 @@ const Home = () => {
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
                                         <TableCell component="th" scope="row">
-                                            {appointment.date}
+                                            {new Date(appointment.date).toLocaleString()}
                                         </TableCell>
-                                        <TableCell>{searchedPatient.name}</TableCell>
-                                        <TableCell>{searchedPatient.surname}</TableCell>
-                                        <TableCell>{searchedPatient.phone}</TableCell>
-                                        <TableCell>butonlar gelecek</TableCell>
+                                        <TableCell>{searchedPatient?.name}</TableCell>
+                                        <TableCell>{searchedPatient?.surname}</TableCell>
+                                        <TableCell>{searchedPatient?.phone}</TableCell>
+                                        <TableCell>
+                                            <Button variant="outlined" color="primary">Edit</Button>
+                                            <Button variant="outlined" color="error">Delete</Button>
+                                            <Button variant="outlined" color="secondary">Details</Button>
+                                        </TableCell>
                                     </TableRow>
                                 )
                             })

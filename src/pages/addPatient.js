@@ -3,6 +3,7 @@ import { Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { v4 } from 'uuid';
 const AddPatient = (props) => {
     const navigate = useNavigate()
     const [patients, setPatients] = useState(null)
@@ -11,7 +12,7 @@ const AddPatient = (props) => {
     const [phone, setPhone] = useState("");
     const [complaint, setComplaint] = useState("");
     useEffect(() => {
-        axios.get("http://localhost:3004/patients")
+        axios.get("http://localhost:3090/patients")
             .then(res => {
                 setPatients(res.data)
             })
@@ -24,43 +25,43 @@ const AddPatient = (props) => {
         if (!name || !surname || !phone || !complaint) {
             alert("All blanks have to be fulfilled!")
             return
-        }
+        };
         if (phone.length !== 11) {
             alert("The phone number is not valid!")
             return
-        }
+        };
         const hasNumber = patients.find(patient => patient.phone === phone)
         if (hasNumber) {
             alert("This number is already registered")
             return
-        }
+        };
         const newOperation = {
-            id: String(new Date().getTime()),
+            id: String(v4()),
             complaint: complaint,
             treatment: "",
             prescription: []
-        }
-        axios.post("http://localhost:3004/operations", newOperation)
+        };
+        axios.post("http://localhost:3090/operations", newOperation)
             .then(operationRes => {
                 const newPatient = {
-                    id: String(new Date().getTime()+1),
+                    id: String(v4()),
                     name: name,
                     surname: surname,
                     phone: phone,
                     operationIds: [newOperation.id]
                 };
-                axios.post("http://localhost:3004/patients", newPatient)
-                .then(res=>{
-                    navigate("/patients")
-                })
-                .catch(err=>{
-                    console.log("addPatient page postPatient error", err)
-                })
+                axios.post("http://localhost:3090/patients", newPatient)
+                    .then(res => {
+                        navigate("/patients")
+                    })
+                    .catch(err => {
+                        console.log("addPatient page postPatient error", err)
+                    })
             })
             .catch(err => {
                 console.log("addPatient page postAppointment", err)
             })
-        
+
     }
     if (!patients) {
         return (<h1>Loading...</h1>)
@@ -77,7 +78,7 @@ const AddPatient = (props) => {
                         variant="outlined"
                         value={name}
                         onChange={event => setName(event.target.value)}
-                        
+
                     />
 
                 </div>

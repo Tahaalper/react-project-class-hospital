@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button, TextField } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import {v4} from "uuid";
 const AddAppointment = (props) => {
     const [date, setDate] = useState("");
     const [name, setName] = useState("");
@@ -12,7 +13,7 @@ const AddAppointment = (props) => {
     const [patients, setPatients] = useState(null)
     const navigate = useNavigate()
     useEffect(() => {
-        axios.get("http://localhost:3004/patients")
+        axios.get("http://localhost:3090/patients")
             .then(res => {
                 setPatients(res.data)
             })
@@ -31,64 +32,69 @@ const AddAppointment = (props) => {
         if (phone.length !== 11) {
             alert("Phone number must be 11 digits")
             return;
-        }
+        };
         if (hasPatient) {
             const newAppointment = {
-                id: String(new Date().getTime()),
+                id: String(v4()),
                 date: date,
                 patientId: hasPatient.id
-            }
+            };
             const newOperation = {
-                id: String(new Date().getTime() + 1),
+                id: String(v4),
                 complaint: complaint,
                 treatment: "",
                 prescription: []
-            }
+            };
             const updatedPatient = {
                 ...hasPatient,
                 operationIds: [
                     ...hasPatient.operationIds,
                     newOperation.id
                 ]
-            }
-            axios.post("http://localhost:3004/appointments", newAppointment)
+            };
+            console.log(newOperation,updatedPatient,newAppointment)
+            axios.post("http://localhost:3090/appointments", newAppointment)
                 .then((res) => { console.log("appointmnet register", res) })
-                .catch((err) => { console.log("operation register", err) })
                 .catch((err) => { console.log("err", err) })
-            axios.put(`http://localhost:3004/patients/${hasPatient.id}`, updatedPatient)
+            axios.post("http://localhost:3090/operations", newOperation)
+                .then((res) => { console.log("operations register", res) })
+                .catch((err) => { console.log(err) })
+            axios.put(`http://localhost:3090/patients/${hasPatient.id}`, updatedPatient)
                 .then((res) => { console.log("patient update", res) })
                 .catch((err) => { console.log(err) })
             navigate("/")
-        } else {
+        } else {  
             const newOperation = {
-                id: String(new Date().getTime()),
+                id: String(v4()),
                 complaint: complaint,
                 treatment: "",
                 prescription: []
             };
             const newPatient = {
-                id: String(new Date().getTime() + 1),
+                id: String(v4()),
                 name: name,
                 surname: surname,
-                phone:phone,
-                operationIds: []
+                phone: phone,
+                operationIds: [newOperation.id]
             };
             const newAppointment = {
-                id: String(new Date().getTime() + 2),
+                id: String(v4()),
                 date: date,
                 patientId: newPatient.id
             };
-            axios.post("http://localhost:3004/appointments", newAppointment)
+
+            console.log(newOperation,newPatient,newAppointment)
+            axios.post("http://localhost:3090/appointments", newAppointment)
                 .then((res) => { console.log("appointmnet register", res) })
                 .catch((err) => { console.log("err", err) })
-            axios.post("http://localhost:3004/operations", newOperation)
+            axios.post("http://localhost:3090/patients", newPatient)
+                .then((res) => { console.log("Patient register", res) })
+                .catch((err) => console.log("err", err))
+            axios.post("http://localhost:3090/operations", newOperation)
                 .then((res) => { console.log("operation register", res) })
                 .catch((err) => { console.log("err", err) })
-            axios.post("http://localhost:3004/patients", newPatient)
-            .then((res)=>{console.log("Patient register",res)})
-            .catch((err)=>console.log("err",err))
-        navigate("/")
-        }  
+            navigate("/")
+        }
     };
 
     const handlePhoneChange = (event) => {
