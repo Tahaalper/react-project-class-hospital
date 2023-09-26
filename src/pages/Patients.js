@@ -20,36 +20,41 @@ const Patients = (props) => {
     }
 
     useEffect((props) => {
-        axios.get("http://localhost:3090/patients")
+        axios
+            .get("http://localhost:3090/patients")
             .then(res => {
                 setPatients(res.data)
             })
             .catch(err => {
                 console.log(err, "err")
             })
-        axios.get("http://localhost:3090/appointments")
+        axios
+            .get("http://localhost:3090/appointments")
             .then(res => {
                 setAppointments(res.data)
             })
             .catch(err => {
                 console.log(err)
             })
-    }, [updateComponent])
+    }, [updateComponent]);
 
 
     const handleDeletePatient = (patient) => {
-        const filteredAppointments = appointments.filter(item => item.patientId === patient.id)
-        axios.delete(`http://localhost:3090/patients/${patient.id}`)
-            .then(deletePatientResponse => {
-                patient.operationIds.map(operationId => {
+        const filteredAppointments = appointments.filter(
+            item => item.patientId === patient.id)
+        axios
+            .delete(`http://localhost:3090/patients/${patient.id}`)
+            .then((deletePatientResponse) => {
+                patient.operationIds.map((operationId) => {
                     return (
-                        axios.delete(`http://localhost:3090/operations/${operationId}`)
+                        axios
+                            .delete(`http://localhost:3090/operations/${operationId}`)
                             .then(deleteOperationRes => {
                             })
                             .catch(err => console.log("Patients page deleteOperation err", err))
-                    )
-                })
-                filteredAppointments.map(item => {
+                    );
+                });
+                filteredAppointments.map((item) => {
                     return (
                         axios.delete(`http://localhost:3090/appointments/${item.id}`)
                             .then(res => { })
@@ -122,6 +127,9 @@ const Patients = (props) => {
                 </Table>
             </TableContainer>
             <EditPatientModal
+                patients={patients}
+                setUpdateComponent={setUpdateComponent}
+                updateComponent={updateComponent}
                 patient={selectedPatient}
                 open={openEditModal}
                 handleClose={handleClose}

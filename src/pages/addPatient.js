@@ -95,7 +95,7 @@ const AddPatient = (props) => {
                 </div>
                 <div style={{ display: "flex", justifyContent: "center", margin: "20px 0px" }}>
                     <TextField
-                        type={"number"}
+                        type='number'
                         style={{ width: "50%" }}
                         label="Phone Number"
                         variant="outlined"

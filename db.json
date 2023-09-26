@@ -1,5 +1,43 @@
 {
-  "operations": [],
-  "appointments": [],
-  "patients": []
+  "operations": [
+    {
+      "id": "3cfaf6ab-ae82-4e4e-8da4-cf9346a33096",
+      "complaint": "test2",
+      "treatment": "",
+      "prescription": []
+    },
+    {
+      "id": "b099c4a1-2784-4886-be84-786e25dfe202",
+      "complaint": "test1",
+      "treatment": "",
+      "prescription": []
+    }
+  ],
+  "appointments": [
+    {
+      "id": "e7c0d713-5695-4711-b9b1-b246a4543bf1",
+      "date": "2023-10-15T06:30",
+      "patientId": "dd078967-d366-4474-8129-f21774f24714"
+    }
+  ],
+  "patients": [
+    {
+      "id": "dd078967-d366-4474-8129-f21774f24714",
+      "name": "test2",
+      "surname": "test2",
+      "phone": "01451451414",
+      "operationIds": [
+        "3cfaf6ab-ae82-4e4e-8da4-cf9346a33096"
+      ]
+    },
+    {
+      "id": "b178a650-608a-420f-a8ec-059c4f3e0261",
+      "name": "test1",
+      "surname": "test1",
+      "phone": "07891564899",
+      "operationIds": [
+        "b099c4a1-2784-4886-be84-786e25dfe202"
+      ]
+    }
+  ]
 }
