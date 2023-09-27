@@ -12,10 +12,10 @@ const Home = () => {
     const [patients, setPatients] = useState(null);
     const navigate = useNavigate();
     useEffect(() => {
-        axios.get("http://localhost:3090/appointments")
+        axios.get("http://localhost:3004/appointments")
             .then(resAppointments => {
                 setAppointments(resAppointments.data)
-                axios.get("http://localhost:3090/patients")
+                axios.get("http://localhost:3004/patients")
                     .then(resPatients => {
                         setPatients(resPatients.data)
                     })

@@ -21,19 +21,19 @@ const Patients = (props) => {
 
     useEffect((props) => {
         axios
-            .get("http://localhost:3090/patients")
-            .then(res => {
+            .get("http://localhost:3004/patients")
+            .then((res) => {
                 setPatients(res.data)
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err, "err")
             })
         axios
-            .get("http://localhost:3090/appointments")
-            .then(res => {
+            .get("http://localhost:3004/appointments")
+            .then((res) => {
                 setAppointments(res.data)
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err)
             })
     }, [updateComponent]);
@@ -43,27 +43,26 @@ const Patients = (props) => {
         const filteredAppointments = appointments.filter(
             item => item.patientId === patient.id)
         axios
-            .delete(`http://localhost:3090/patients/${patient.id}`)
+            .delete(`http://localhost:3004/patients/${patient.id}`)
             .then((deletePatientResponse) => {
                 patient.operationIds.map((operationId) => {
                     return (
                         axios
-                            .delete(`http://localhost:3090/operations/${operationId}`)
-                            .then(deleteOperationRes => {
-                            })
-                            .catch(err => console.log("Patients page deleteOperation err", err))
+                            .delete(`http://localhost:3004/operations/${operationId}`)
+                            .then((deleteOperationRes) => { })
+                            .catch((err) => { console.log("Patients page deleteOperation err", err) })
                     );
                 });
                 filteredAppointments.map((item) => {
                     return (
-                        axios.delete(`http://localhost:3090/appointments/${item.id}`)
-                            .then(res => { })
-                            .catch(err => console.log("err", err))
+                        axios.delete(`http://localhost:3004/appointments/${item.id}`)
+                            .then((res) => { })
+                            .catch((err) => { console.log("err", err) })
                     )
                 })
                 setUpdateComponent(!updateComponent)
             })
-            .catch(err => console.log("Patients page deletePatient err", err))
+            .catch((err) => { console.log("Patients page deletePatient err", err) })
     }
 
     if (!patients || !appointments) {
@@ -101,7 +100,7 @@ const Patients = (props) => {
                             )
                         }
                         {
-                            patients.map(patient => {
+                            patients.map((patient) => {
                                 return (
                                     <TableRow
                                         key={patient.id}
@@ -114,9 +113,18 @@ const Patients = (props) => {
                                                 <Button onClick={() => {
                                                     setOpenEditModal(true)
                                                     setSelectedPatient(patient)
-                                                }} variant="outlined" color="primary">Edit</Button>
-                                                <Button onClick={() => handleDeletePatient(patient)} variant="outlined" color="error">Delete</Button>
-                                                <Button variant="outlined" color="secondary">Details</Button>
+                                                }}
+                                                    variant="outlined"
+                                                    color="primary">Edit</Button>
+                                                <Button
+                                                    onClick={() => handleDeletePatient(patient)}
+                                                    variant="outlined"
+                                                    color="error">Delete</Button>
+                                                <Button
+                                                    variant="outlined"
+                                                    color="secondary"
+                                                    onClick={() => navigate(`/patient-detail/${patient.id}`)}
+                                                >Details</Button>
                                             </Stack>
                                         </TableCell>
                                     </TableRow>

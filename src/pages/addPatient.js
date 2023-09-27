@@ -12,7 +12,7 @@ const AddPatient = (props) => {
     const [phone, setPhone] = useState("");
     const [complaint, setComplaint] = useState("");
     useEffect(() => {
-        axios.get("http://localhost:3090/patients")
+        axios.get("http://localhost:3004/patients")
             .then(res => {
                 setPatients(res.data)
             })
@@ -24,16 +24,16 @@ const AddPatient = (props) => {
         event.preventDefault();
         if (!name || !surname || !phone || !complaint) {
             alert("All blanks have to be fulfilled!")
-            return
+            return;
         };
         if (phone.length !== 11) {
             alert("The phone number is not valid!")
-            return
+            return;
         };
         const hasNumber = patients.find(patient => patient.phone === phone)
         if (hasNumber) {
             alert("This number is already registered")
-            return
+            return;
         };
         const newOperation = {
             id: String(v4()),
@@ -41,7 +41,7 @@ const AddPatient = (props) => {
             treatment: "",
             prescription: []
         };
-        axios.post("http://localhost:3090/operations", newOperation)
+        axios.post("http://localhost:3004/operations", newOperation)
             .then(operationRes => {
                 const newPatient = {
                     id: String(v4()),
@@ -50,7 +50,7 @@ const AddPatient = (props) => {
                     phone: phone,
                     operationIds: [newOperation.id]
                 };
-                axios.post("http://localhost:3090/patients", newPatient)
+                axios.post("http://localhost:3004/patients", newPatient)
                     .then(res => {
                         navigate("/patients")
                     })

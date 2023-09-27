@@ -33,14 +33,14 @@ const EditPatientModal = (props) => {
             setHasNameError(true)
             setTimeout(() => {
                 setHasNameError(false)
-            }, 3090);
+            }, 3004);
             return;
         }
         if (!surname) {
             setHasSurnameError(true)
             setTimeout(() => {
                 setHasSurnameError(false)
-            }, 3090);
+            }, 3004);
             return;
         }
         if (!phone) {
@@ -49,7 +49,7 @@ const EditPatientModal = (props) => {
             setTimeout(() => {
                 setHasPhoneError(false)
                 setPhoneErrorMessage("")
-            }, 3090);
+            }, 3004);
             return;
         }
         if (phone.length !== 11) {
@@ -58,7 +58,7 @@ const EditPatientModal = (props) => {
             setTimeout(() => {
                 setHasPhoneError(false)
                 setPhoneErrorMessage("")
-            }, 3090);
+            }, 3004);
             return;
         };
         const filteredPatients = patients.filter((item) => item.phone !== patient.phone);
@@ -74,7 +74,7 @@ const EditPatientModal = (props) => {
             phone: phone,
         };
         axios
-            .put(`http://localhost:3090/patients/${patient.id}`, updatedPatient)
+            .put(`http://localhost:3004/patients/${patient.id}`, updatedPatient)
             .then((res) => {
                 handleClose()
                 setUpdateComponent(!updateComponent)
@@ -99,7 +99,7 @@ const EditPatientModal = (props) => {
             >
                 <Box sx={style}>
                     <form onSubmit={handleSubmit}>
-                        <h1 style={{ textAlign: "center" }}>Edit Patient</h1>
+                        <h1 style={{ textAlign: "center" }}>AddTreatment</h1>
                         <div style={{
                             flexDirection: "column",
                             display: "flex",
@@ -112,7 +112,7 @@ const EditPatientModal = (props) => {
                                 label="Patient's Name"
                                 variant="outlined"
                                 value={name}
-                                onChange={(event) => setName(event.target.value)}
+                                onChange={(event) => {setName(event.target.value)}}
                             />
                             {
                                 hasNameError && (
@@ -134,7 +134,7 @@ const EditPatientModal = (props) => {
                                 label="Patient's Surname"
                                 variant="outlined"
                                 value={surname}
-                                onChange={event => setSurname(event.target.value)}
+                                onChange={(event) =>{ setSurname(event.target.value)}}
                             />
                             {
                                 hasSurnameError && (
@@ -158,7 +158,7 @@ const EditPatientModal = (props) => {
                                 label="Patient's Number"
                                 variant="outlined"
                                 value={phone}
-                                onChange={event => setPhone(event.target.value)}
+                                onChange={(event) => {setPhone(event.target.value)}}
                             />
                             {
                                 hasPhoneError && (
