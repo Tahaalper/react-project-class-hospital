@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import axios from "axios";
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -7,56 +7,42 @@ import {
     TableContainer, TableHead, TableRow, Stack
 } from '@mui/material';
 import EditPatientModal from '../components/EditPatientModal';
+import { useSelector, useDispatch } from "react-redux";
+import actionTypes from '../redux/actions/actionTypes';
 
 const Patients = (props) => {
+    const { patientsState, appointmentsState } = useSelector(state => state);
     const navigate = useNavigate()
-    const [patients, setPatients] = useState(null)
+    const dispatch = useDispatch()
     const [updateComponent, setUpdateComponent] = useState(false)
-    const [appointments, setAppointments] = useState(null)
     const [openEditModal, setOpenEditModal] = useState(false)
     const [selectedPatient, setSelectedPatient] = useState(null)
     const handleClose = () => {
         setOpenEditModal(false)
     }
-
-    useEffect((props) => {
-        axios
-            .get("http://localhost:3004/patients")
-            .then((res) => {
-                setPatients(res.data)
-            })
-            .catch((err) => {
-                console.log(err, "err")
-            })
-        axios
-            .get("http://localhost:3004/appointments")
-            .then((res) => {
-                setAppointments(res.data)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }, [updateComponent]);
-
-
     const handleDeletePatient = (patient) => {
-        const filteredAppointments = appointments.filter(
+        const filteredAppointments = appointmentsState.appointments.filter(
             item => item.patientId === patient.id)
         axios
             .delete(`http://localhost:3004/patients/${patient.id}`)
             .then((deletePatientResponse) => {
-                patient.operationIds.map((operationId) => {
+                dispatch({ type: actionTypes.DELETE_PATIENT, payload: patient.id })
+                patientsState.patient.operationIds.map((operationId) => {
                     return (
                         axios
                             .delete(`http://localhost:3004/operations/${operationId}`)
-                            .then((deleteOperationRes) => { })
+                            .then((deleteOperationRes) => {
+                                dispatch({ type: actionTypes.DELETE_OPERATION, payload: operationId })
+                            })
                             .catch((err) => { console.log("Patients page deleteOperation err", err) })
                     );
                 });
                 filteredAppointments.map((item) => {
                     return (
                         axios.delete(`http://localhost:3004/appointments/${item.id}`)
-                            .then((res) => { })
+                            .then((res) => {
+                                dispatch({ type: actionTypes.DELETE_OPERATION, payload: item.id })
+                            })
                             .catch((err) => { console.log("err", err) })
                     )
                 })
@@ -65,7 +51,9 @@ const Patients = (props) => {
             .catch((err) => { console.log("Patients page deletePatient err", err) })
     }
 
-    if (!patients || !appointments) {
+    if (patientsState.success === false ||
+        appointmentsState.success === false
+    ) {
         return (<h1>Loading...</h1>)
     }
     return (
@@ -93,14 +81,14 @@ const Patients = (props) => {
                     </TableHead>
                     <TableBody>
                         {
-                            patients.length === 0 && (
+                            patientsState.patients.length === 0 && (
                                 <TableRow>
                                     <TableCell align="center" colSpan={4}>There are no registered patients</TableCell>
                                 </TableRow>
                             )
                         }
                         {
-                            patients.map((patient) => {
+                            patientsState.patients.map((patient) => {
                                 return (
                                     <TableRow
                                         key={patient.id}
@@ -135,7 +123,7 @@ const Patients = (props) => {
                 </Table>
             </TableContainer>
             <EditPatientModal
-                patients={patients}
+                patients={patientsState.patients}
                 setUpdateComponent={setUpdateComponent}
                 updateComponent={updateComponent}
                 patient={selectedPatient}

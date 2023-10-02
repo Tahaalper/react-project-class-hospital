@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
-import axios from "axios";
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
     Button, Paper, Table, TableBody, TableCell,
@@ -8,26 +7,17 @@ import {
 } from '@mui/material';
 
 const Home = () => {
-    const [appointments, setAppointments] = useState(null);
-    const [patients, setPatients] = useState(null);
+    const { appointmentsState, patientsState } = useSelector(state => state)
+    var sortedAppointments = appointmentsState.appointments.sort(function (item1, item2) {
+        return new Date(item1.date) - new Date(item2.date);
+    })
     const navigate = useNavigate();
-    useEffect(() => {
-        axios.get("http://localhost:3004/appointments")
-            .then(resAppointments => {
-                setAppointments(resAppointments.data)
-                axios.get("http://localhost:3004/patients")
-                    .then(resPatients => {
-                        setPatients(resPatients.data)
-                    })
-                    .catch(err => { console.log(err, "err") })
-            }
-            )
-            .catch(err => {
-                console.log(err, "err")
-            }
-            )
-    }, []);
-    if (!appointments || !patients) {
+    if (
+        patientsState.start === true ||
+        patientsState.fail === true ||
+        appointmentsState.start === true ||
+        appointmentsState.fail === true
+    ) {
         return <h1>Loading...</h1>
     }
     return (
@@ -59,15 +49,15 @@ const Home = () => {
                     </TableHead>
                     <TableBody>
                         {
-                            appointments.length === 0 && (
+                            appointmentsState.appointments.length === 0 && (
                                 <TableRow>
                                     <TableCell align="center" colSpan={5}>There are no appointments</TableCell>
                                 </TableRow>
                             )
                         }
                         {
-                            appointments.map((appointment) => {
-                                const searchedPatient = patients.find(patient => patient.id === appointment.patientId)
+                            sortedAppointments.map((appointment) => {
+                                const searchedPatient = patientsState.patients.find(patient => patient.id === appointment.patientId)
                                 return (
                                     <TableRow
                                         key={appointment.id}

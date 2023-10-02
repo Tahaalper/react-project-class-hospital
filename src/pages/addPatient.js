@@ -4,13 +4,17 @@ import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { v4 } from 'uuid';
+import { useSelector, useDispatch } from "react-redux";
+import actionTypes from '../redux/actions/actionTypes';
 const AddPatient = (props) => {
+    const { patientsState } = useSelector(state => state)
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     const [patients, setPatients] = useState(null)
-    const [name, setName] = useState("");
-    const [surname, setSurname] = useState("");
-    const [phone, setPhone] = useState("");
-    const [complaint, setComplaint] = useState("");
+    const [name, setName] = useState("")
+    const [surname, setSurname] = useState("")
+    const [phone, setPhone] = useState("")
+    const [complaint, setComplaint] = useState("")
     useEffect(() => {
         axios.get("http://localhost:3004/patients")
             .then(res => {
@@ -30,7 +34,7 @@ const AddPatient = (props) => {
             alert("The phone number is not valid!")
             return;
         };
-        const hasNumber = patients.find(patient => patient.phone === phone)
+        const hasNumber = patientsState.patients.find(patient => patient.phone === phone)
         if (hasNumber) {
             alert("This number is already registered")
             return;
@@ -43,6 +47,7 @@ const AddPatient = (props) => {
         };
         axios.post("http://localhost:3004/operations", newOperation)
             .then(operationRes => {
+                dispatch({ type: actionTypes.ADD_OPERATION, newOperation })
                 const newPatient = {
                     id: String(v4()),
                     name: name,
@@ -52,6 +57,7 @@ const AddPatient = (props) => {
                 };
                 axios.post("http://localhost:3004/patients", newPatient)
                     .then(res => {
+                        dispatch({ type: actionTypes.ADD_PATIENT, payload: newPatient })
                         navigate("/patients")
                     })
                     .catch(err => {

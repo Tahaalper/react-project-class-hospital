@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Button, TextField, Modal, Box } from '@mui/material';
 import { useState } from 'react';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import actionTypes from "../redux/actions/actionTypes";
 const style = {
     position: 'absolute',
     top: '50%',
@@ -11,12 +13,13 @@ const style = {
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 4,
-};
+}
 
 const ApplyTreatmentModal = (props) => {
-    const { open, handleClose, operation, didUpdate, setDidUpdate } = props;
+    const { open, handleClose, operation } = props;
     const [appliedTreatment, setAppliedTreatment] = useState("")
     const [medicines, setMedicines] = useState("")
+    const dispatch = useDispatch()
     const handleSubmit = (event) => {
         event.preventDefault()
         if (!appliedTreatment || !medicines) {
@@ -36,10 +39,10 @@ const ApplyTreatmentModal = (props) => {
                 setAppliedTreatment("")
                 setMedicines("")
                 handleClose()
-                setDidUpdate(!didUpdate)
+                dispatch({ type: actionTypes.EDIT_OPERATION, payload: updatedOperation })
             })
             .catch((err) => { console.log(err) })
-    };
+    }
     return (
         <div>
             <Modal
@@ -94,7 +97,7 @@ const ApplyTreatmentModal = (props) => {
                             }}
                         >
                             <Button
-                            onClick={handleClose}
+                                onClick={handleClose}
                                 variant="outlined"
                                 color='error'>
                                 cancel

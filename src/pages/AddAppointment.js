@@ -1,26 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button, TextField } from '@mui/material';
-import axios from 'axios';
+import api from '../api/api';
 import { useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
+import urls from '../api/urls';
+import { useDispatch, useSelector } from 'react-redux';
+import actionTypes from '../redux/actions/actionTypes';
+
 const AddAppointment = (props) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { patientsState, appointmentsState } = useSelector(state => state)
     const [date, setDate] = useState("");
     const [name, setName] = useState("");
     const [surname, setSurname] = useState("");
     const [phone, setPhone] = useState("");
     const [complaint, setComplaint] = useState("");
     const [hasPatient, setHasPatient] = useState(false);
-    const [patients, setPatients] = useState(null);
-    const navigate = useNavigate();
-    useEffect(() => {
-        axios.get("http://localhost:3004/patients")
-            .then(res => {
-                setPatients(res.data)
-            })
-            .catch(err => {
-                console.log("AddPatient page, getPatients error", err)
-            })
-    }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -33,6 +29,10 @@ const AddAppointment = (props) => {
             alert("Phone number must be 11 digits")
             return;
         };
+        const isAvailableDate = appointmentsState.appointments.find((item) => item.date === date)
+        if (isAvailableDate) {
+            alert("There is already an appointment at this time")
+        }
         if (hasPatient) {
             const newAppointment = {
                 id: String(v4()),
@@ -47,20 +47,30 @@ const AddAppointment = (props) => {
             };
             const updatedPatient = {
                 ...hasPatient,
-                operationIds: [
-                    ...hasPatient.operationIds,
-                    newOperation.id
-                ]
+                operationIds: [...hasPatient.operationIds, newOperation.id]
             };
-            console.log(newOperation, updatedPatient, newAppointment)
-            axios.post("http://localhost:3004/appointments", newAppointment)
-                .then((res) => { console.log("appointmnet register", res) })
+            api
+                .post(urls.appointments, newAppointment)
+                .then((res) => {
+                    console.log("appointmnet register", res)
+                    dispatch({
+                        type: actionTypes.ADD_APPOINTMENT, payload: newAppointment
+                    })
+                })
                 .catch((err) => { console.log("err", err) })
-            axios.post("http://localhost:3004/operations", newOperation)
-                .then((res) => { console.log("operations register", res) })
+            api
+                .post(urls.operations, newOperation)
+                .then((res) => {
+                    console.log("operations register", res)
+                    dispatch({ type: actionTypes.ADD_OPERATION, payload: newOperation })
+                })
                 .catch((err) => { console.log(err) })
-            axios.put(`http://localhost:3004/patients/${hasPatient.id}`, updatedPatient)
-                .then((res) => { console.log("patient update", res) })
+            api
+                .put(`${urls.patients}/${hasPatient.id}`, updatedPatient)
+                .then((res) => {
+                    console.log("patient update", res)
+                    dispatch({ type: actionTypes.EDIT_PATIENT, payload: updatedPatient })
+                })
                 .catch((err) => { console.log(err) })
             navigate("/")
         } else {
@@ -84,14 +94,23 @@ const AddAppointment = (props) => {
             };
 
             console.log(newOperation, newPatient, newAppointment)
-            axios.post("http://localhost:3004/appointments", newAppointment)
-                .then((res) => { console.log("appointmnet register", res) })
+            api.post(urls.appointments, newAppointment)
+                .then((res) => {
+                    console.log("appointment register", res)
+                    dispatch({ type: actionTypes.ADD_APPOINTMENT, payload: newAppointment })
+                })
                 .catch((err) => { console.log("err", err) })
-            axios.post("http://localhost:3004/patients", newPatient)
-                .then((res) => { console.log("Patient register", res) })
+            api.post(urls.patients, newPatient)
+                .then((res) => {
+                    console.log("Patient register", res)
+                    dispatch({ type: actionTypes.ADD_OPERATION, payload: newOperation })
+                })
                 .catch((err) => console.log("err", err))
-            axios.post("http://localhost:3004/operations", newOperation)
-                .then((res) => { console.log("operation register", res) })
+            api.post(urls.operations, newOperation)
+                .then((res) => {
+                    console.log("operation register", res)
+                    dispatch({ type: actionTypes.ADD_PATIENT, payload: newPatient })
+                })
                 .catch((err) => { console.log("err", err) })
             navigate("/")
         }
@@ -99,7 +118,7 @@ const AddAppointment = (props) => {
 
     const handlePhoneChange = (event) => {
         setPhone(event.target.value)
-        const wantedPatient = patients.find((item) => item.phone === String(event.target.value))
+        const wantedPatient = patientsState.patients.find((item) => item.phone === String(event.target.value))
         if (wantedPatient) {
             setName(wantedPatient.name)
             setSurname(wantedPatient.surname)
@@ -111,7 +130,10 @@ const AddAppointment = (props) => {
         }
     }
 
-    if (!patients) {
+    if (
+        patientsState.success === false ||
+        appointmentsState.sucess === false
+    ) {
         return (<h1>Loading...</h1>)
     }
     return (

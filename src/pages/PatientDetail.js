@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import ApplyTreatmentModal from "../components/ApplyTreatment";
+import { useSelector } from "react-redux";
 
 const PatientDetail = (props) => {
     const { patientId } = useParams()
+    const { operationsState } = useSelector(state => state)
     const [patient, setPatient] = useState(null)
     const [patientOperations, setPatientOperations] = useState([])
     const [openTreatmentModal, setOpenTreatmentModal] = useState(false)
     const [selectedOperation, setSelectedOperation] = useState(null)
-    const [didUpdate, setDidUpdate] = useState(false)
+
     useEffect(() => {
         axios
             .get(`http://localhost:3004/patients/${patientId}`)
@@ -29,7 +31,8 @@ const PatientDetail = (props) => {
                     .catch((err) => { console.log("err", err) })
             })
             .catch((err) => { console.log("err", err) })
-    }, [didUpdate, patientId])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [operationsState.operations])
 
     return (
         <div>
@@ -56,8 +59,8 @@ const PatientDetail = (props) => {
                                     </>
                                 ) : (
                                     <>
-                                    <h4>Treatment: </h4>
-                                    <span>{operation.treatment}</span>
+                                        <h4>Treatment: </h4>
+                                        <span>{operation.treatment}</span>
                                     </>
                                 )}
                             </p>
@@ -85,8 +88,6 @@ const PatientDetail = (props) => {
                 open={openTreatmentModal}
                 handleClose={() => { setOpenTreatmentModal(false) }}
                 operation={selectedOperation}
-                didUpdate={didUpdate}
-                setDidUpdate={setDidUpdate}
             />
         </div>
     )
